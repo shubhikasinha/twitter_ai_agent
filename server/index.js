@@ -1,7 +1,17 @@
 import express from "express";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
+import { createPost } from "./mcp.tool.js";
 import { z } from "zod";
+import { config } from "dotenv";
+config({ path: './server/.env' });
+
+console.log('Loaded Twitter keys:', {
+  TWITTER_API_KEY: process.env.TWITTER_API_KEY,
+  TWITTER_API_SECRET_KEY: process.env.TWITTER_API_SECRET_KEY,
+  TWITTER_ACCESS_TOKEN: process.env.TWITTER_ACCESS_TOKEN,
+  TWITTER_ACCESS_TOKEN_SECRET: process.env.TWITTER_ACCESS_TOKEN_SECRET,
+});
 
 const server = new McpServer({
     name: "example-server",
@@ -26,6 +36,17 @@ server.tool("addTwoNumbers",
                 }
             ]
         }
+    }
+)
+
+server.tool("createPost",
+    "Creates a new post on X (Twitter)",
+    {
+        status: z.string()
+    },
+    async (arg) => {
+        const { status } = arg;
+        return createPost(status);
     }
 )
 

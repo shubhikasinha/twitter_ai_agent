@@ -55,9 +55,8 @@ async function chatLoop(toolCall) {
         });
     }
     const model = ai.getGenerativeModel({
-        model: "gemini-1.5-flash",
+        model: "gemini-2.0-flash",
     });
-    console.log("Sending chatHistory to Gemini:", JSON.stringify(chatHistory, null, 2));
     const result = await model.generateContent({
         contents: chatHistory,
         tools: [{ functionDeclarations: tools }],
@@ -78,7 +77,7 @@ async function chatLoop(toolCall) {
         return chatLoop(responsePart.functionCall);
     }
     else if (responsePart.text) {
-        console.log(`AI: ${responsePart.text}`);
+        console.log(`Agent: ${responsePart.text}`);
         chatHistory.push({
             role: "model",
             parts: [{ text: responsePart.text }]
